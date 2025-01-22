@@ -9,7 +9,7 @@ public class Shooting : MonoBehaviour
     [SerializeField] float weaponImpactForce;       // Impact bullet force on the target
     [SerializeField] float weaponCadence;           // Weapon Cadence
     [SerializeField] ParticleSystem muzzleEffect;   // Weapon Particle system
-    [SerializeField] Target target;
+    //[SerializeField] Target target;                 // Scripts intercomm. (Option A) 
     [SerializeField] private Transform rayOrigin;
 
     private AudioSource audioSource;
@@ -59,8 +59,30 @@ public class Shooting : MonoBehaviour
         //// Configure the raycast
         //ray.origin = cam.transform.position;        
         //ray.direction = cam.transform.forward;
-        if (Physics.Raycast(ray,out hit, weaponRange))                    
-            target.TakeDamage(weaponDamage);                
+        if (Physics.Raycast(ray,out hit, weaponRange))
+        {
+            //// Scripts intercomm. (Option A) Target passed through the Inspector
+            //target.TakeDamage(weaponDamage);
+
+            // Scripts intercomm. (Option B)
+            Target target = hit.collider.GetComponent<Target>();
+            if (target != null)
+            {
+                // Execute the TakeDamage method from the Target script
+                target.TakeDamage(weaponDamage);
+                // Place the hit particle system on the exact hit position
+                target.hitEffect.transform.position = hit.point;
+                // 
+                if (hit.rigidbody != null)
+                    hit.rigidbody.AddForce(ray.direction * weaponImpactForce);
+                //hit.rigidbody.AddForce(-hit.normal * weaponImpactForce);
+            }
+                
+
+            //// Scripts intercomm. (Option C) -> Not valid in this case as it will return errors
+            //hit.collider.GetComponent<Target>().TakeDamage(weaponDamage);
+        }                    
+            
     }
     void LineRendererSetup()
     {
