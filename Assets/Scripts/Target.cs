@@ -10,7 +10,7 @@ public class Target : MonoBehaviour
 
     private MeshRenderer meshRenderer;
 
-    //private AudioSource audioSource;
+    private AudioSource audioSource;
 
     public float currentHealth;
     
@@ -19,7 +19,7 @@ public class Target : MonoBehaviour
         currentHealth = maxHealth;
 
         meshRenderer = GetComponent<MeshRenderer>();
-        //audioSource = GetComponent<AudioSource>();
+        audioSource = GetComponent<AudioSource>();
     }        
     public void TakeDamage(float amount)
     {
@@ -28,8 +28,7 @@ public class Target : MonoBehaviour
             StartCoroutine(nameof(Death));
         else
         {            
-            hitEffect.Play();
-            //audioSource.Play();             // Play the audio shoot FX
+            hitEffect.Play();            
         }
             
     }
@@ -46,8 +45,10 @@ public class Target : MonoBehaviour
         meshRenderer.enabled = false;
         // Start playing the Death animation
         deathEffect.Play();
+        // Start playing the Death Audio FX
+        audioSource.Play();             
         // Wait till the Death Anim. has finished
-        while(deathEffect.isPlaying)
+        while (deathEffect.isPlaying || audioSource.isPlaying)
             yield return null;
     }    
 }

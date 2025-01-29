@@ -8,7 +8,7 @@ public class PlayerMovement : MonoBehaviour
     [Header("Movement")]
     [SerializeField] float accelerationSpeed;
     [SerializeField] float decelerationSpeed;
-    [SerializeField] float airAccelSpeedFactor = 0.5f;
+    [SerializeField] float airAccelSpeedFactor = 0.8f;
     [SerializeField] float maxSpeed;    
 
     [Header("Jump")]
@@ -17,10 +17,16 @@ public class PlayerMovement : MonoBehaviour
     [Header("Raycast - Ground")]
     [SerializeField] LayerMask groundMask;
     [SerializeField] float rayLength;
-    [SerializeField] Transform groundCheck;
+    [SerializeField] Transform groundCheck;    
+
+    // Needed time to reach the grappling point
+    [SerializeField] float timeToReachPoint = 2f;
     #endregion
 
     #region Private_Variables
+    // Player pos. offset respect ot the Grappling point
+    [SerializeField] Vector3 offset;
+
     // Raycast vars
     Ray ray;
     RaycastHit hit;
@@ -128,6 +134,32 @@ public class PlayerMovement : MonoBehaviour
             jumpPressed = false;
             rb.AddForce(Vector3.up * jumpForce);
         }
+    }
+    public IEnumerator MoveTowardsPoint(Vector3 targetPos)
+    {
+        // Init the timer
+        float timeElapsed = 0f;
+        // Get the Player Start Position
+        Vector3 playerStartPos = transform.position;
+        // Calculate the dir. from the player towards the target
+        Vector3 directionToTarget = (targetPos - transform.position).normalized;
+        // Apply the offset on the oposite dir. to the target
+        targetPos = targetPos - directionToTarget * offset.magnitude;
+
+        // Keep moving towards the Point as long as we haven't reached it
+        while (timeElapsed < timeToReachPoint)
+        {
+            timeElapsed += Time.deltaTime;  // Timer increase
+
+            // Position interpolation
+            transform.position = Vector3.Lerp(playerStartPos, targetPos, timeElapsed / timeToReachPoint);
+
+            // Wait for the next frame to continue
+            yield return null;
+        }
+
+        // Assure we reach the exact end position
+        transform.position = targetPos;
     }
     #endregion
 }
