@@ -10545,7 +10545,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bb556c7f544f5334e821e875eb040c41, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timeToChangeState: 10
+  maxTimeToFlicker: 50
+  minTimeToFlicker: 15
   switchLantern: {fileID: 8300000, guid: 01a32c5cf46798645ab179c6e0602b72, type: 3}
   BlinkLantern: {fileID: 8300000, guid: cb6bdd114a747524da756d3380d6eb08, type: 3}
 --- !u!82 &829527480

@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class Lantern : MonoBehaviour
 {
-    [SerializeField] float timeToChangeState;   // The lantern will blink every certain time
+    [SerializeField] float maxTimeToFlicker;   // Max Time to elapse to enter in blinking state
+    [SerializeField] float minTimeToFlicker;   // Min Time to elapse to enter in blinking state
 
     Light spotLight;
     float timer;
@@ -38,7 +40,7 @@ public class Lantern : MonoBehaviour
     void ChangeState()
     {
         timer += Time.deltaTime;
-        if (timer > timeToChangeState)
+        if (timer > Random.Range(minTimeToFlicker,maxTimeToFlicker))
         {
             timer = 0;
             // Call to coroutine
@@ -65,12 +67,25 @@ public class Lantern : MonoBehaviour
                 audioSource.Play();
             yield return new WaitForSeconds(timeOnOff);                       
         }
-        lanternWorking = true;
-        //Debug.Log("Elapsed " + Time.time + "s out of " + totalTimeBlink + "s");
 
         // Stop the audio Blinking clip
         audioSource.Stop();
+
+        // Once blinking has finished then we'll set randomly the final state of the lantern.
+        spotLight.enabled = (Random.value<=0.5f) ? true: false;
+
+        // In case the final lantern state is switched off then we leave it in this sate
+        // for a certain time and then we switch it on
+        if (!spotLight.enabled)
+        {
+            yield return new WaitForSeconds(3);
+            spotLight.enabled = true;               // Switch on the lantern
+        }        
+
         // Set again the Lantern Switch audio clip
         audioSource.clip = switchLantern;
+
+        // Allow again the Lantern control by the player
+        lanternWorking = true;
     }
 }
