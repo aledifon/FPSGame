@@ -20,7 +20,11 @@ public class TriggerDoorEvent : MonoBehaviour
     {
         audioSource = GetComponent<AudioSource>();         
         
-        doorTransform = GetComponent<Transform>();
+        //doorTransform = GetComponent<Transform>();
+
+        Debug.Log("");
+
+        //doorTransform.Rotate(Vector3.up,150f);
 
         //doorTransform.rotation = Quaternion.Euler(0f, -450f, 0f);
 
@@ -48,20 +52,23 @@ public class TriggerDoorEvent : MonoBehaviour
         if (other.CompareTag("Player") && !audioSource.isPlaying)
         {
             audioSource.Play();
-            //StartCoroutine(OpenDoor());
-            StartCoroutine(DestroyAfterDelay());
+            StartCoroutine(nameof(OpenDoor));
+            StartCoroutine(nameof(DestroyAfterDelay));
         }                
     }
     IEnumerator DestroyAfterDelay()
     {        
-        yield return new WaitWhile(() => audioSource.isPlaying && !isDoorOpened);        
+        //yield return new WaitWhile(() => audioSource.isPlaying || !isDoorOpened);
+        yield return new WaitUntil(() => isDoorOpened && !audioSource.isPlaying);
+        //Debug.Log("Before destroying the GO");
         Destroy(gameObject);
     }
     IEnumerator OpenDoor()
     {
         float elapsedTime = 0f;
         startDoorRot = doorTransform.rotation;
-        targetDoorRot = Quaternion.Euler(0f, 360f, 0f);
+        targetDoorRot = Quaternion.Euler(0, 90f, 0f);
+        //targetDoorRot = startDoorRot * Quaternion.Euler(48f, 130f, 260f);
 
         Debug.Log("Door started on: " + startDoorRot.eulerAngles); // Muestra la rotación en la consola
         Debug.Log("Target rotation is: " + targetDoorRot.eulerAngles); // Muestra la rotación en la consola
@@ -72,8 +79,10 @@ public class TriggerDoorEvent : MonoBehaviour
             elapsedTime += Time.deltaTime;
 
             // Move door from point A towards point B  
-            doorTransform.rotation = 
+            doorTransform.rotation =
                 Quaternion.Lerp(startDoorRot, targetDoorRot, elapsedTime / openingDuration);
+
+            Debug.Log("Door Tanform Rotation = " + doorTransform.rotation);
             // 1 frame Waiting
             yield return null;
         }
@@ -81,7 +90,8 @@ public class TriggerDoorEvent : MonoBehaviour
         doorTransform.rotation = targetDoorRot;
         // Set the Door opened flag to true
         isDoorOpened = true;
+        Debug.Log("isDoorOpened = " + isDoorOpened);
 
-        Debug.Log("Door rotated to: " + doorTransform.rotation.eulerAngles); // Muestra la rotación en la consola
+        //Debug.Log("Door rotated to: " + doorTransform.rotation.eulerAngles); // Muestra la rotación en la consola
     }
 }

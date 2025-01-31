@@ -43,8 +43,11 @@ public class Lantern : MonoBehaviour
         if (timer > Random.Range(minTimeToFlicker,maxTimeToFlicker))
         {
             timer = 0;
+            StopCoroutine(nameof(Flicker));       // Recommended to always stop a coroutine
+                                            // monitored by a timer before calling it again
+                                            
             // Call to coroutine
-            StartCoroutine(Flicker());
+            StartCoroutine(nameof(Flicker));
         }            
     }
     IEnumerator Flicker()
