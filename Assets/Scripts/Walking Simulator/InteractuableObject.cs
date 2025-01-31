@@ -1,7 +1,9 @@
 using JetBrains.Annotations;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static Object;
 
 public class InteractuableObject : Object
 {
@@ -10,13 +12,49 @@ public class InteractuableObject : Object
     // GO Components
     [SerializeField] PlayerActions playerActions;
 
+    // Animate Type Objects vars.
+    #region Animate_Objects_Vars
+    private Vector3 initPos;
+    private Vector3 targetPos;
+    private float openingTime = 2f;
+    #endregion
+
+    private void Start()
+    {
+        initPos = transform.position;
+        targetPos = new Vector3(initPos.x,initPos.y,initPos.z+0.3f);
+    }
+    private void Update()
+    {
+        
+    }
     public void ActionOne()
     {
-        Take();
+        switch (objectType)
+        {
+            case ObjectType.TakeDrop:
+                Take();
+                break;
+            case ObjectType.Animate:
+                StartCoroutine(nameof(Open));
+                break;
+            case ObjectType.Read:
+                break;
+        }        
     }
     public void ActionTwo()
-    {
-        Drop();
+    {        
+        switch (objectType)
+        {
+            case ObjectType.TakeDrop:
+                Drop();
+                break;
+            case ObjectType.Animate:
+                Close();
+                break;
+            case ObjectType.Read:
+                break;
+        }
     }
     void Take()
     {
@@ -45,5 +83,39 @@ public class InteractuableObject : Object
         transform.SetParent(null);
         rb.isKinematic = false;
         rb.AddForce(transform.forward*impulse);
+    }
+
+    IEnumerator Open()
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < openingTime)
+        {
+            elapsedTime += Time.deltaTime;
+            transform.position = Vector3.Lerp(initPos, targetPos, elapsedTime / openingTime);
+            yield return null;
+        }
+    }
+    IEnumerator Close()
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < openingTime)
+        {
+            elapsedTime += Time.deltaTime;
+            transform.position = Vector3.Lerp(initPos, targetPos, elapsedTime / openingTime);
+            yield return null;
+        }
+    }
+    void StartReading()
+    {
+        // Oscurecer pantalla y sacar cuadro texto
+        // Mostrar texto en pantalla
+
+        // Hacer todo por Canvas?
+    }
+    void StopReading()
+    {
+
     }
 }
