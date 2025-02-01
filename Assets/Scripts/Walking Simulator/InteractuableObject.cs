@@ -50,7 +50,7 @@ public class InteractuableObject : Object
                 Drop();
                 break;
             case ObjectType.Animate:
-                Close();
+                StartCoroutine(nameof(Close));
                 break;
             case ObjectType.Read:
                 break;
@@ -86,7 +86,7 @@ public class InteractuableObject : Object
     }
 
     IEnumerator Open()
-    {
+    {        
         float elapsedTime = 0f;
 
         while (elapsedTime < openingTime)
@@ -95,6 +95,7 @@ public class InteractuableObject : Object
             transform.position = Vector3.Lerp(initPos, targetPos, elapsedTime / openingTime);
             yield return null;
         }
+        transform.position = targetPos;
     }
     IEnumerator Close()
     {
@@ -103,9 +104,13 @@ public class InteractuableObject : Object
         while (elapsedTime < openingTime)
         {
             elapsedTime += Time.deltaTime;
-            transform.position = Vector3.Lerp(initPos, targetPos, elapsedTime / openingTime);
+            transform.position = Vector3.Lerp(targetPos, initPos, elapsedTime / openingTime);
             yield return null;
         }
+        transform.position = initPos;
+
+        // Set the current object as unselected
+        IsObjectSelected(false);
     }
     void StartReading()
     {

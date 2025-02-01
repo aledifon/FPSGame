@@ -11,7 +11,7 @@ public class PlayerActions : MonoBehaviour
     
     public Transform posObject;                 // The empty GO will be as child of the camera.
 
-    private GameObject objectSelected;          // Ref. to the Selected GO
+    public GameObject objectSelected;          // Ref. to the Selected GO
 
     private PlayerRaycast playerRaycast;        // Ref. to the Player Raycast
     private MouseLook mouseLook;                // Ref. to the 'MouseLook' script
@@ -43,7 +43,8 @@ public class PlayerActions : MonoBehaviour
     void ActionPlayer()
     {
         // I'm clicking and pointing (with the Raycast) to an Interactuable Object
-        if (Input.GetMouseButtonDown(0) && playerRaycast.interactuableObject != null)
+        if (Input.GetMouseButtonDown(0) && playerRaycast.interactuableObject != null
+            && objectSelected == null)
         {
             playerRaycast.interactuableObject.ActionOne();
             objectSelected = playerRaycast.interactuableObject.gameObject;

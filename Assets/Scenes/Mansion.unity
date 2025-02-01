@@ -6941,10 +6941,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7709836101893910852, guid: b3d35c4e61dc3264486348062e55f6ad, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1243771709}
+      addedObject: {fileID: 1243771710}
     - targetCorrespondingSourceObject: {fileID: 7709836101893910852, guid: b3d35c4e61dc3264486348062e55f6ad, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1243771710}
+      addedObject: {fileID: 1243771709}
   m_SourcePrefab: {fileID: 100100000, guid: b3d35c4e61dc3264486348062e55f6ad, type: 3}
 --- !u!1001 &593312606
 PrefabInstance:
@@ -11834,6 +11834,9 @@ GameObject:
   - component: {fileID: 956219131}
   - component: {fileID: 956219130}
   - component: {fileID: 956219129}
+  - component: {fileID: 956219134}
+  - component: {fileID: 956219132}
+  - component: {fileID: 956219133}
   m_Layer: 10
   m_Name: drawer1_low (1)
   m_TagString: Untagged
@@ -11900,12 +11903,81 @@ Transform:
   m_GameObject: {fileID: 956219128}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -21.684385, y: 0.92263365, z: 13.202}
+  m_LocalPosition: {x: -21.684385, y: 0.92263365, z: 12.928}
   m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!54 &956219132
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 956219128}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &956219133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 956219128}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1fb30a4a339b85e488dd7d33deb425e2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  objectType: 2
+  mat: {fileID: 2100000, guid: 9d4f342ea84e3d14da9131801f883dde, type: 2}
+  newMat: {fileID: 2100000, guid: 6bbbf1fddde69c546a9ec34f17b9fd48, type: 2}
+  textToShow: Open/Close
+  textUI: {fileID: 739003084}
+  rb: {fileID: 956219132}
+  rend: {fileID: 956219129}
+  impulse: 0
+  playerActions: {fileID: 801335481}
+--- !u!65 &956219134
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 956219128}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.3372838, y: 0.1715184, z: 0.3934695}
+  m_Center: {x: -0.16864192, y: -0.0857592, z: -0.14801812}
 --- !u!1001 &966044696
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15887,7 +15959,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -40.45
+      value: -21.87
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -15895,7 +15967,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 19.55
+      value: 14.416
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalRotation.w
