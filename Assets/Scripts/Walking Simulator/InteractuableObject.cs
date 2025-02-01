@@ -16,13 +16,23 @@ public class InteractuableObject : Object
     #region Animate_Objects_Vars
     private Vector3 initPos;
     private Vector3 targetPos;
-    private float openingTime = 2f;
+    private float openingTime = 1f;
+
+    private Quaternion[] initRotArray;
+    private Quaternion[] targetRotArray;
     #endregion
 
     private void Start()
     {
         initPos = transform.position;
-        targetPos = new Vector3(initPos.x,initPos.y,initPos.z+0.3f);
+        targetPos = new Vector3(initPos.x, initPos.y, initPos.z + 0.3f);
+
+        //1. Get the child Transform Components
+        // Transform[] transformDoor;
+        //2. Set initRot rot with initRot = new Quaternion [] {child[0].transform.rotation,
+        //                                                  child[1].transform.rotation}        
+        //3. Set targetRot rot with targetRot = new Quaternion [] {initRot[0] * Quaternion.Euler(0, 100f, 0f),
+        //                                                         initRot[0] * Quaternion.Euler(0, -100f, 0f)}
     }
     private void Update()
     {
@@ -39,7 +49,7 @@ public class InteractuableObject : Object
                 if (objectSubType == ObjectSubType.AnimateDrawer)
                     StartCoroutine(nameof(OpenDrawer));
                 else if (objectSubType == ObjectSubType.AnimateCabinet)
-                    StartCoroutine(nameof(OpenDrawer));
+                    StartCoroutine(nameof(OpenDoors));
                 break;
             case ObjectType.Read:
                 break;
@@ -56,7 +66,7 @@ public class InteractuableObject : Object
                 if (objectSubType == ObjectSubType.AnimateDrawer)
                     StartCoroutine(nameof(CloseDrawer));
                 else if (objectSubType == ObjectSubType.AnimateCabinet)
-                    StartCoroutine(nameof(CloseDrawer));
+                    StartCoroutine(nameof(CloseDoors));
                 break;
             case ObjectType.Read:
                 break;
@@ -105,17 +115,21 @@ public class InteractuableObject : Object
         }
         transform.position = targetPos;
     }
-    IEnumerator OpenCabinet()
+    IEnumerator OpenDoors()
     {
         float elapsedTime = 0f;
 
         while (elapsedTime < openingTime)
         {
             elapsedTime += Time.deltaTime;
-            transform.rotation = Quaternion.Lerp(initRot, targetRot, elapsedTime / openingTime);
+            for(int i=0; i<=initRotArray.Length-1, i++)
+                //transformDoor[i].rotation = Quaternion.Lerp(initRotArray[i], 
+                //                                        targetRotArray[i], 
+                //                                        elapsedTime / openingTime);            
             yield return null;
         }
-        transform.rotation = targetRot;
+        //transformDoor[0].rotation = targetRotArray[0];
+        //transformDoor[1].rotation = targetRotArray[1];        
     }
     IEnumerator CloseDrawer()
     {
@@ -124,10 +138,29 @@ public class InteractuableObject : Object
         while (elapsedTime < openingTime)
         {
             elapsedTime += Time.deltaTime;
-            transform.rotation = Quaternion.Lerp(targetRot, initRot, elapsedTime / openingTime);
+            transform.position = Vector3.Lerp(targetPos, initPos, elapsedTime / openingTime);
             yield return null;
         }
-        transform.rotation = initRot;
+        transform.position = initPos;
+
+        // Set the current object as unselected
+        IsObjectSelected(false);
+    }
+    IEnumerator CloseDoors()
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < openingTime)
+        {
+            elapsedTime += Time.deltaTime;
+            for (int i = 0; i <= initRotArray.Length - 1, i++)
+                //transformDoor[i].rotation = Quaternion.Lerp(targetRotArray[i], 
+                //                                        initRotArray[i], 
+                //                                        elapsedTime / openingTime);            
+                yield return null;
+        }
+        //transformDoor[0].rotation = initRotArray[0];
+        //transformDoor[1].rotation = initRotArray[1];     
 
         // Set the current object as unselected
         IsObjectSelected(false);

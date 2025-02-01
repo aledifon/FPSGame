@@ -4,12 +4,13 @@ using UnityEngine;
 
 public class TriggerDoorEvent : MonoBehaviour
 {
-    AudioSource audioSource;    
+    //AudioSource audioSource;    
 
     bool isDoorOpened;
 
     [SerializeField] Transform doorTransform; //door (6)
     [SerializeField] float openingDuration;
+    [SerializeField] AudioSource audioSource;
     //Quaternion targetDoorRot = Quaternion.Euler(0f, -360f, 0f);    
     //Quaternion rotationToAdd /*= Quaternion.Euler(0f, 90f, 0f)*/;
     Quaternion targetDoorRot;
@@ -18,7 +19,7 @@ public class TriggerDoorEvent : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();         
+        //audioSource = GetComponent<AudioSource>();         
         
         //doorTransform = GetComponent<Transform>();
 

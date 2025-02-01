@@ -27,8 +27,12 @@ public class PlayerRaycast : MonoBehaviour
         ray.direction = myCamera.forward;
 
         if (Physics.Raycast(ray, out hit, Mathf.Infinity, objectLayer))     
-        {            
+        {
+            Debug.Log("Detected object");
             interactuableObject = hit.collider.GetComponent<InteractuableObject>();
+            // In case if it's null we'll check also if its parent has the script.
+            if (interactuableObject == null )
+                interactuableObject = hit.collider.GetComponentInParent<InteractuableObject>();
             if (interactuableObject != null)
             {
                 interactuableObject.IsObjectSelected(true);

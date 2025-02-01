@@ -8,7 +8,7 @@ public class Object : MonoBehaviour
     public enum ObjectType {TakeDrop, Read, Animate}
     public ObjectType objectType;
 
-    public enum ObjectSubType { None, AnimateDrawer, AnimateCabinet}
+    public enum ObjectSubType { None, AnimateDrawer, AnimateCabinet, AnimateDoors}
     public ObjectSubType objectSubType;
 
     [SerializeField] Material mat;      //Original Object material
@@ -16,18 +16,20 @@ public class Object : MonoBehaviour
     [SerializeField] string textToShow;
     [SerializeField] TextMeshProUGUI textUI;
     [SerializeField] protected Rigidbody rb;
-    [SerializeField] Renderer rend;
+    [SerializeField] List<Renderer> rendList;
     
     public void IsObjectSelected(bool selected)
     {
         if (selected)
-        {
-            rend.material = newMat;
+        {   
+            foreach(Renderer rend in rendList)
+                rend.material = newMat;
             textUI.text = textToShow;
         }
         else
         {
-            rend.material = mat;
+            foreach (Renderer rend in rendList)
+                rend.material = mat;
             textUI.text = "";
         }
     }
