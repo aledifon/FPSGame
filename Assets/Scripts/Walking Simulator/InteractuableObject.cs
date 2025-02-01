@@ -2,6 +2,7 @@ using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using static Object;
 
@@ -13,31 +14,33 @@ public class InteractuableObject : Object
     [SerializeField] PlayerActions playerActions;
 
     // Animate Type Objects vars.
-    #region Animate_Objects_Vars
-    private Vector3 initPos;
-    private Vector3 targetPos;
-    private float openingTime = 1f;
-
-    private Quaternion[] initRotArray;
-    private Quaternion[] targetRotArray;
+    #region Animate_Drawer_Vars
+    private Vector3 initDrawerPos;
+    private Vector3 targetDrawerPos;
+    private float openingDrawerTime = 1f;
     #endregion
+
+    #region Animate_Doors_Vars
+    private List<Transform> transformDoors = new List<Transform>();    
+    private List<Quaternion> initDoorRotList = new List<Quaternion>();
+    private List<Quaternion> targetDoorRotList = new List<Quaternion>();
+    private float openingDoorTime = 3f;
+    #endregion    
+
+    private AudioSource audioSource;
 
     private void Start()
     {
-        initPos = transform.position;
-        targetPos = new Vector3(initPos.x, initPos.y, initPos.z + 0.3f);
+        DrawerSetup();
+        DoorsSetup();
 
-        //1. Get the child Transform Components
-        // Transform[] transformDoor;
-        //2. Set initRot rot with initRot = new Quaternion [] {child[0].transform.rotation,
-        //                                                  child[1].transform.rotation}        
-        //3. Set targetRot rot with targetRot = new Quaternion [] {initRot[0] * Quaternion.Euler(0, 100f, 0f),
-        //                                                         initRot[0] * Quaternion.Euler(0, -100f, 0f)}
+        audioSource = GetComponent<AudioSource>();
     }
     private void Update()
     {
         
     }
+    #region Action_Methods
     public void ActionOne()
     {
         switch (objectType)
@@ -46,10 +49,13 @@ public class InteractuableObject : Object
                 Take();
                 break;
             case ObjectType.Animate:
-                if (objectSubType == ObjectSubType.AnimateDrawer)
-                    StartCoroutine(nameof(OpenDrawer));
-                else if (objectSubType == ObjectSubType.AnimateCabinet)
+                if (objectSubType == ObjectSubType.AnimateDrawer)                
+                    StartCoroutine(nameof(OpenDrawer));                                    
+                else if (objectSubType == ObjectSubType.AnimateDoors)
+                {
+                    audioSource.Play();
                     StartCoroutine(nameof(OpenDoors));
+                }                                    
                 break;
             case ObjectType.Read:
                 break;
@@ -63,15 +69,20 @@ public class InteractuableObject : Object
                 Drop();
                 break;
             case ObjectType.Animate:
-                if (objectSubType == ObjectSubType.AnimateDrawer)
-                    StartCoroutine(nameof(CloseDrawer));
-                else if (objectSubType == ObjectSubType.AnimateCabinet)
+                if (objectSubType == ObjectSubType.AnimateDrawer)                
+                    StartCoroutine(nameof(CloseDrawer));                                    
+                else if (objectSubType == ObjectSubType.AnimateDoors)
+                {
+                    audioSource.Play();
                     StartCoroutine(nameof(CloseDoors));
+                }                                    
                 break;
             case ObjectType.Read:
                 break;
         }
     }
+    #endregion
+
     #region TakeDrop_Methods
     void Take()
     {
@@ -102,70 +113,113 @@ public class InteractuableObject : Object
         rb.AddForce(transform.forward*impulse);
     }
     #endregion
-    #region OpenClose_Methods
+
+    #region OpenClose_Drawers_Methods
+    void DrawerSetup()
+    {
+        initDrawerPos = transform.position;
+        targetDrawerPos = new Vector3(initDrawerPos.x, initDrawerPos.y, initDrawerPos.z + 0.3f);
+    }
     IEnumerator OpenDrawer()
     {        
         float elapsedTime = 0f;
 
-        while (elapsedTime < openingTime)
+        while (elapsedTime < openingDrawerTime)
         {
             elapsedTime += Time.deltaTime;
-            transform.position = Vector3.Lerp(initPos, targetPos, elapsedTime / openingTime);
+            transform.position = Vector3.Lerp(initDrawerPos, targetDrawerPos, elapsedTime / openingDrawerTime);
             yield return null;
         }
-        transform.position = targetPos;
-    }
-    IEnumerator OpenDoors()
-    {
-        float elapsedTime = 0f;
-
-        while (elapsedTime < openingTime)
-        {
-            elapsedTime += Time.deltaTime;
-            //for(int i=0; i<=initRotArray.Length-1, i++)
-                //transformDoor[i].rotation = Quaternion.Lerp(initRotArray[i], 
-                //                                        targetRotArray[i], 
-                //                                        elapsedTime / openingTime);            
-            yield return null;
-        }
-        //transformDoor[0].rotation = targetRotArray[0];
-        //transformDoor[1].rotation = targetRotArray[1];        
-    }
+        transform.position = targetDrawerPos;
+    }    
     IEnumerator CloseDrawer()
     {
         float elapsedTime = 0f;
 
-        while (elapsedTime < openingTime)
+        while (elapsedTime < openingDrawerTime)
         {
             elapsedTime += Time.deltaTime;
-            transform.position = Vector3.Lerp(targetPos, initPos, elapsedTime / openingTime);
+            transform.position = Vector3.Lerp(targetDrawerPos, initDrawerPos, elapsedTime / openingDrawerTime);
             yield return null;
         }
-        transform.position = initPos;
-
-        // Set the current object as unselected
-        IsObjectSelected(false);
-    }
-    IEnumerator CloseDoors()
-    {
-        float elapsedTime = 0f;
-
-        while (elapsedTime < openingTime)
-        {
-            elapsedTime += Time.deltaTime;
-            //for (int i = 0; i <= initRotArray.Length - 1, i++)
-                //transformDoor[i].rotation = Quaternion.Lerp(targetRotArray[i], 
-                //                                        initRotArray[i], 
-                //                                        elapsedTime / openingTime);            
-                yield return null;
-        }
-        //transformDoor[0].rotation = initRotArray[0];
-        //transformDoor[1].rotation = initRotArray[1];     
+        transform.position = initDrawerPos;
 
         // Set the current object as unselected
         IsObjectSelected(false);
     }
     #endregion
+    #region OpenClose_Doors_Methods
+    void DoorsSetup()
+    {        
+        // The GO parent have any children (so this means the doors are GO's children)
+        if (gameObject.transform.childCount > 0)
+        {
+            int numDoors = 0;
+
+            foreach (Transform child in transform)
+            {   // Increase the doors counter             
+                numDoors++;                             
+                //1. Get the Door Childs Transform Components
+                transformDoors.Add(child);
+                //2. Get the initial Door Childs Rotations
+                initDoorRotList.Add(child.rotation);
+                //2. Get the target Door Childs Rotations
+                if (numDoors <= 1)
+                    targetDoorRotList.Add(child.rotation * Quaternion.Euler(0, 100f, 0f));
+                else
+                    targetDoorRotList.Add(child.rotation * Quaternion.Euler(0, -100f, 0f));
+            }
+        }
+        // The GO parent have no children (So himself is the GO's door and there is a single door)
+        else
+        {
+            //1. Get the Door Transform Component
+            transformDoors.Add(transform);
+            //2. Get the initial Door Rotation
+            initDoorRotList.Add(transform.rotation);
+            //2. Get the target Door Rotation          
+            targetDoorRotList.Add(transform.rotation * Quaternion.Euler(0, 100f, 0f));            
+        }        
+    }
+    IEnumerator OpenDoors()
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < openingDoorTime)
+        {
+            elapsedTime += Time.deltaTime;
+            for (int i = 0; i <= transformDoors.Count - 1; i++)
+                transformDoors[i].rotation = Quaternion.Lerp(initDoorRotList[i],
+                                                        targetDoorRotList[i],
+                                                        elapsedTime / openingDoorTime);
+            yield return null;
+        }
+        // Assure all the doors finish on their right position
+        for (int i = 0; i <= transformDoors.Count - 1; i++)
+            transformDoors[i].rotation = targetDoorRotList[i];        
+    }
+    IEnumerator CloseDoors()
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < openingDoorTime)
+        {
+            elapsedTime += Time.deltaTime;
+            for (int i = 0; i <= transformDoors.Count - 1; i++)
+                transformDoors[i].rotation = Quaternion.Lerp(targetDoorRotList[i],
+                                                        initDoorRotList[i],
+                                                        elapsedTime / openingDoorTime);
+            yield return null;
+        }
+        // Assure all the doors finish on their right position
+        for (int i = 0; i <= transformDoors.Count - 1; i++)
+            transformDoors[i].rotation = initDoorRotList[i];
+
+        // Set the current object as unselected
+        IsObjectSelected(false);
+    }
+    #endregion
+
     #region Reading_Methods
     void StartReading()
     {
