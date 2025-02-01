@@ -23,6 +23,8 @@ public class PlayerActions : MonoBehaviour
 
     private bool IsRotObjectEnabled;
 
+    private InteractuableObject interactuableObject;
+
     private void Awake()
     {
         playerRaycast = GetComponent<PlayerRaycast>();
@@ -48,6 +50,7 @@ public class PlayerActions : MonoBehaviour
         {
             playerRaycast.interactuableObject.ActionOne();
             objectSelected = playerRaycast.interactuableObject.gameObject;
+            interactuableObject = objectSelected.GetComponent<InteractuableObject>();
             playerRaycast.interactuableObject = null;
         }
         else if (Input.GetMouseButtonDown(0) && objectSelected != null && !IsRotObjectEnabled) 
@@ -58,7 +61,8 @@ public class PlayerActions : MonoBehaviour
     }
     void rotateObject()
     {
-        if (objectSelected != null)
+        if (objectSelected != null && 
+            interactuableObject.objectType == InteractuableObject.ObjectType.TakeDrop)
         {
             if (Input.GetKeyDown(KeyCode.E))
             {

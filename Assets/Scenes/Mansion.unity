@@ -10434,6 +10434,7 @@ MonoBehaviour:
   mouseSensitivity: 3
   zObject: 0.5
   posObject: {fileID: 268161170}
+  objectSelected: {fileID: 0}
 --- !u!1001 &813075714
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -11949,6 +11950,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectType: 2
+  objectSubType: 1
   mat: {fileID: 2100000, guid: 9d4f342ea84e3d14da9131801f883dde, type: 2}
   newMat: {fileID: 2100000, guid: 6bbbf1fddde69c546a9ec34f17b9fd48, type: 2}
   textToShow: Open/Close
@@ -15330,6 +15332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   objectType: 0
+  objectSubType: 0
   mat: {fileID: 2100000, guid: 95d2f7c98c02e7b4ebf0e9ffc610a0a9, type: 2}
   newMat: {fileID: 2100000, guid: 6bbbf1fddde69c546a9ec34f17b9fd48, type: 2}
   textToShow: Coger

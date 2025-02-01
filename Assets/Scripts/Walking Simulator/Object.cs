@@ -8,6 +8,9 @@ public class Object : MonoBehaviour
     public enum ObjectType {TakeDrop, Read, Animate}
     public ObjectType objectType;
 
+    public enum ObjectSubType { None, AnimateDrawer, AnimateCabinet}
+    public ObjectSubType objectSubType;
+
     [SerializeField] Material mat;      //Original Object material
     [SerializeField] Material newMat;   //New Object material when the object is selected
     [SerializeField] string textToShow;

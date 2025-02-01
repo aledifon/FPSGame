@@ -36,7 +36,10 @@ public class InteractuableObject : Object
                 Take();
                 break;
             case ObjectType.Animate:
-                StartCoroutine(nameof(Open));
+                if (objectSubType == ObjectSubType.AnimateDrawer)
+                    StartCoroutine(nameof(OpenDrawer));
+                else if (objectSubType == ObjectSubType.AnimateCabinet)
+                    StartCoroutine(nameof(OpenDrawer));
                 break;
             case ObjectType.Read:
                 break;
@@ -50,12 +53,16 @@ public class InteractuableObject : Object
                 Drop();
                 break;
             case ObjectType.Animate:
-                StartCoroutine(nameof(Close));
+                if (objectSubType == ObjectSubType.AnimateDrawer)
+                    StartCoroutine(nameof(CloseDrawer));
+                else if (objectSubType == ObjectSubType.AnimateCabinet)
+                    StartCoroutine(nameof(CloseDrawer));
                 break;
             case ObjectType.Read:
                 break;
         }
     }
+    #region TakeDrop_Methods
     void Take()
     {
         // Set the current object as unselected
@@ -84,8 +91,9 @@ public class InteractuableObject : Object
         rb.isKinematic = false;
         rb.AddForce(transform.forward*impulse);
     }
-
-    IEnumerator Open()
+    #endregion
+    #region OpenClose_Methods
+    IEnumerator OpenDrawer()
     {        
         float elapsedTime = 0f;
 
@@ -97,21 +105,35 @@ public class InteractuableObject : Object
         }
         transform.position = targetPos;
     }
-    IEnumerator Close()
+    IEnumerator OpenCabinet()
     {
         float elapsedTime = 0f;
 
         while (elapsedTime < openingTime)
         {
             elapsedTime += Time.deltaTime;
-            transform.position = Vector3.Lerp(targetPos, initPos, elapsedTime / openingTime);
+            transform.rotation = Quaternion.Lerp(initRot, targetRot, elapsedTime / openingTime);
             yield return null;
         }
-        transform.position = initPos;
+        transform.rotation = targetRot;
+    }
+    IEnumerator CloseDrawer()
+    {
+        float elapsedTime = 0f;
+
+        while (elapsedTime < openingTime)
+        {
+            elapsedTime += Time.deltaTime;
+            transform.rotation = Quaternion.Lerp(targetRot, initRot, elapsedTime / openingTime);
+            yield return null;
+        }
+        transform.rotation = initRot;
 
         // Set the current object as unselected
         IsObjectSelected(false);
     }
+    #endregion
+    #region Reading_Methods
     void StartReading()
     {
         // Oscurecer pantalla y sacar cuadro texto
@@ -123,4 +145,5 @@ public class InteractuableObject : Object
     {
 
     }
+    #endregion
 }
