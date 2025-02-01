@@ -122,7 +122,7 @@ public class InteractuableObject : Object
         while (elapsedTime < openingTime)
         {
             elapsedTime += Time.deltaTime;
-            for(int i=0; i<=initRotArray.Length-1, i++)
+            //for(int i=0; i<=initRotArray.Length-1, i++)
                 //transformDoor[i].rotation = Quaternion.Lerp(initRotArray[i], 
                 //                                        targetRotArray[i], 
                 //                                        elapsedTime / openingTime);            
@@ -153,7 +153,7 @@ public class InteractuableObject : Object
         while (elapsedTime < openingTime)
         {
             elapsedTime += Time.deltaTime;
-            for (int i = 0; i <= initRotArray.Length - 1, i++)
+            //for (int i = 0; i <= initRotArray.Length - 1, i++)
                 //transformDoor[i].rotation = Quaternion.Lerp(targetRotArray[i], 
                 //                                        initRotArray[i], 
                 //                                        elapsedTime / openingTime);            
