@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
 using static Object;
+using DG.Tweening;
 
 public class InteractuableObject : Object
 {
@@ -29,10 +30,19 @@ public class InteractuableObject : Object
     private List<Quaternion> closeDoorRotList = new List<Quaternion>();
     private float openingDoorTime = 3f;
     [SerializeField] private Boolean isObjectOpened;
-    #endregion    
+    public Boolean IsObjectOpened { get { return isObjectOpened; } }
+    #endregion
+
+    #region Read_Vars
+    private Vector3 paperTablePos = new Vector3(-16.987f, 0.917f, 23.758f);
+    private Quaternion paperTableRot = Quaternion.Euler(90f, 0f, 90f); 
+    private Vector3 paperReadPos = new Vector3(0.32f,0.2f,-0.09f);
+    private Quaternion paperReadRot = Quaternion.Euler(165f,180f,180f);
+    private Boolean isReading;
+    public Boolean IsReading { get { return isReading; } }
+    #endregion
 
     private bool isCoroutineRunning;
-
     private AudioSource audioSource;
 
     private void Start()
@@ -61,6 +71,7 @@ public class InteractuableObject : Object
                 {
                     if (!isCoroutineRunning)
                     {
+                        audioSource.Play();
                         if (isObjectOpened)
                             StartCoroutine(nameof(CloseDrawer));
                         else
@@ -77,9 +88,16 @@ public class InteractuableObject : Object
                         else
                             StartCoroutine(nameof(OpenDoors));
                     }                    
-                }                                    
+                } 
+                else if(objectSubType == ObjectSubType.ClosedDoor)
+                {
+                    audioSource.Play();
+                    ShakeDoors();
+                }
                 break;
             case ObjectType.Read:
+                audioSource.Play();
+                StartReading();
                 break;
         }        
     }
@@ -93,6 +111,8 @@ public class InteractuableObject : Object
             case ObjectType.Animate:
                 break;
             case ObjectType.Read:
+                audioSource.Play();
+                StopReading();
                 break;
         }
     }
@@ -181,6 +201,7 @@ public class InteractuableObject : Object
         isCoroutineRunning = false;
     }
     #endregion
+
     #region OpenClose_Doors_Methods
     void DoorsSetup()
     {        
@@ -229,7 +250,7 @@ public class InteractuableObject : Object
             closeDoorRotList.Add(openDoorsRotation * closeDoorsTurn);            
         }        
     }
-    IEnumerator OpenDoors()
+    public IEnumerator OpenDoors()
     {
         isCoroutineRunning = true;
 
@@ -280,17 +301,47 @@ public class InteractuableObject : Object
     }
     #endregion
 
+    #region Doors_Shaking
+    void ShakeDoors() 
+    {
+        transform.DOShakePosition(1f,new Vector3(0.03f,0f,0f),10,40);
+    }
+    #endregion
+
     #region Reading_Methods
     void StartReading()
     {
-        // Oscurecer pantalla y sacar cuadro texto
-        // Mostrar texto en pantalla
+        // Oscurecer pantalla y sacar cuadro texto        
 
-        // Hacer todo por Canvas?
+        // Set the current object as unselected
+        IsObjectSelected(false);
+
+        isReading = true;
+
+        // Set the current GO as child of the 'PosObject' GO which is a child of the 'Main Camera' GO
+        //transform.SetParent(Camera.main.transform.GetChild(1).transform);
+        //Transform posObjectTransform = Camera.main.transform.Find("PosObject");
+        Transform posObjectTransform = playerActions.posObject;
+
+        if (posObjectTransform != null)
+            transform.SetParent(posObjectTransform);
+        else
+            Debug.Log("It was not found the 'PosObject' as a child of Camera.main");
+
+        // Set the current Object Pos & Rotations respect to his father position ('PosObject')
+        transform.localPosition = paperReadPos;
+        transform.localRotation = paperReadRot;
     }
     void StopReading()
-    {
+    {   
+        // Remove the paper from the Camera hierarchy
+        transform.SetParent(null);
 
+        // Set again the paper init positions and rotations
+        transform.position = paperTablePos;
+        transform.rotation = paperTableRot;
+
+        isReading = false;
     }
     #endregion
 }

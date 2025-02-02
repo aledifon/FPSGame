@@ -4,12 +4,14 @@ using UnityEngine;
 
 public class TriggerWomanEvent : MonoBehaviour
 {
-    AudioSource audioSource;    
+    [SerializeField] AudioSource audioSource;
+    [SerializeField] AudioSource tvAudioSource;
+    [SerializeField] InteractuableObject paperEntrance;
 
     // Start is called before the first frame update
     void Start()
     {
-        audioSource = GetComponent<AudioSource>();        
+        
     }
 
     // Update is called once per frame
@@ -23,6 +25,8 @@ public class TriggerWomanEvent : MonoBehaviour
         if (other.CompareTag("Player") && !audioSource.isPlaying)
         {
             audioSource.Play();
+            tvAudioSource.Stop();
+            paperEntrance.enabled = true;
             StartCoroutine(DestroyAfterDelay());
         }                
     }

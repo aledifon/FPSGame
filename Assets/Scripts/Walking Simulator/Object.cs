@@ -8,7 +8,7 @@ public class Object : MonoBehaviour
     public enum ObjectType {TakeDrop, Read, Animate}
     public ObjectType objectType;
 
-    public enum ObjectSubType { None, AnimateDrawer, AnimateDoors}
+    public enum ObjectSubType { None, AnimateDrawer, AnimateDoors, ClosedDoor}
     public ObjectSubType objectSubType;
 
     [SerializeField] Material mat;      //Original Object material

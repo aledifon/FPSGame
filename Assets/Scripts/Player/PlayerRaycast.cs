@@ -35,7 +35,12 @@ public class PlayerRaycast : MonoBehaviour
                 interactuableObject = hit.collider.GetComponentInParent<InteractuableObject>();
             if (interactuableObject != null)
             {
-                interactuableObject.IsObjectSelected(true);
+                // Only if we are reading a Read Object the Object selection won't be performed
+                if (interactuableObject.objectType == InteractuableObject.ObjectType.Read &&
+                    interactuableObject.IsReading)
+                    interactuableObject.IsObjectSelected(false);
+                else
+                    interactuableObject.IsObjectSelected(true);
                 Debug.Log("Selected object");
             }            
         }

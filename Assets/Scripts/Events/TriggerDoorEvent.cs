@@ -11,17 +11,22 @@ public class TriggerDoorEvent : MonoBehaviour
     [SerializeField] Transform doorTransform; //door (6)
     [SerializeField] float openingDuration;
     [SerializeField] AudioSource audioSource;
-    //Quaternion targetDoorRot = Quaternion.Euler(0f, -360f, 0f);    
-    //Quaternion rotationToAdd /*= Quaternion.Euler(0f, 90f, 0f)*/;
+
+    private Quaternion openDoorRot = Quaternion.Euler(0, 0, 0);
+    //private Quaternion closeDoorRot = Quaternion.Euler(0, -90f, 0);
     Quaternion targetDoorRot;
     Quaternion startDoorRot;
+
+    private InteractuableObject doorObject;
 
     // Start is called before the first frame update
     void Start()
     {
-        //audioSource = GetComponent<AudioSource>();         
-        
+        //audioSource = GetComponent<AudioSource>();                 
         //doorTransform = GetComponent<Transform>();
+        //
+
+        doorObject = doorTransform.GetComponent<InteractuableObject>();
 
         Debug.Log("");
 
@@ -45,15 +50,16 @@ public class TriggerDoorEvent : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        isDoorOpened = doorObject.IsObjectOpened;
     }
 
     private void OnTriggerEnter(Collider other)
     {        
         if (other.CompareTag("Player") && !audioSource.isPlaying)
         {
-            audioSource.Play();
-            StartCoroutine(nameof(OpenDoor));
+            //audioSource.Play();
+            //StartCoroutine(nameof(OpenDoor));
+            doorObject.ActionOne();
             StartCoroutine(nameof(DestroyAfterDelay));
         }                
     }
@@ -65,10 +71,10 @@ public class TriggerDoorEvent : MonoBehaviour
         Destroy(gameObject);
     }
     IEnumerator OpenDoor()
-    {
+    {        
         float elapsedTime = 0f;
         startDoorRot = doorTransform.rotation;
-        targetDoorRot = Quaternion.Euler(0, 90f, 0f);
+        targetDoorRot = openDoorRot;
         //targetDoorRot = startDoorRot * Quaternion.Euler(48f, 130f, 260f);
 
         Debug.Log("Door started on: " + startDoorRot.eulerAngles); // Muestra la rotación en la consola
