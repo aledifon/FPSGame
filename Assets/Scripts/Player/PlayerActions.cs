@@ -23,7 +23,7 @@ public class PlayerActions : MonoBehaviour
 
     private bool IsRotObjectEnabled;
 
-    private InteractuableObject interactuableObject;
+    private InteractuableObject interactuableObject;   
 
     private void Awake()
     {
@@ -43,14 +43,23 @@ public class PlayerActions : MonoBehaviour
         rotateObject();
     }
     void ActionPlayer()
-    {
+    {        
         // I'm clicking and pointing (with the Raycast) to an Interactuable Object
         if (Input.GetMouseButtonDown(0) && playerRaycast.interactuableObject != null
             && objectSelected == null)
         {
+            // Perform the Action One of the corresponding Object detected by the Raycast
             playerRaycast.interactuableObject.ActionOne();
+            // Set the object detected by the Raycast as selected & gets its 'InteractuableObject' script component
             objectSelected = playerRaycast.interactuableObject.gameObject;
             interactuableObject = objectSelected.GetComponent<InteractuableObject>();
+            // If the Object is of 'Animate' type set i to null the object selected to avoid keep a link with it
+            if (interactuableObject.objectType == InteractuableObject.ObjectType.Animate)
+            {
+                objectSelected = null;
+                interactuableObject = null;
+            }                
+            // Remove the Object Control to the Player Raycast
             playerRaycast.interactuableObject = null;
         }
         else if (Input.GetMouseButtonDown(0) && objectSelected != null && !IsRotObjectEnabled) 

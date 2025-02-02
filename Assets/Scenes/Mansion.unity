@@ -10594,15 +10594,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3802876258960973093, guid: 7eb3e448a0f6dbd44a6c2a1521d22a73, type: 3}
       propertyPath: m_LocalRotation.w
-      value: -0.70710707
+      value: -1
       objectReference: {fileID: 0}
     - target: {fileID: 3802876258960973093, guid: 7eb3e448a0f6dbd44a6c2a1521d22a73, type: 3}
       propertyPath: m_LocalRotation.x
-      value: -0
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3802876258960973093, guid: 7eb3e448a0f6dbd44a6c2a1521d22a73, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.70710653
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 3802876258960973093, guid: 7eb3e448a0f6dbd44a6c2a1521d22a73, type: 3}
       propertyPath: m_LocalRotation.z
@@ -10614,7 +10614,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3802876258960973093, guid: 7eb3e448a0f6dbd44a6c2a1521d22a73, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: -450
+      value: 360
       objectReference: {fileID: 0}
     - target: {fileID: 3802876258960973093, guid: 7eb3e448a0f6dbd44a6c2a1521d22a73, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -10760,6 +10760,7 @@ MonoBehaviour:
   - {fileID: 823469453}
   impulse: 0
   playerActions: {fileID: 0}
+  isObjectOpened: 1
 --- !u!4 &824336455 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 3911342678955856025, guid: 042eb2f85eec6a947b58f7e1e9064653, type: 3}
@@ -12164,7 +12165,7 @@ Transform:
   m_GameObject: {fileID: 956219128}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -21.684385, y: 0.92263365, z: 12.928}
+  m_LocalPosition: {x: -21.684385, y: 0.92263365, z: 13.028}
   m_LocalScale: {x: 1.1, y: 1.1, z: 1.1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -12215,11 +12216,12 @@ MonoBehaviour:
   newMat: {fileID: 2100000, guid: 6bbbf1fddde69c546a9ec34f17b9fd48, type: 2}
   textToShow: Open/Close
   textUI: {fileID: 739003084}
-  rb: {fileID: 956219132}
+  rb: {fileID: 0}
   rendList:
   - {fileID: 956219129}
   impulse: 0
   playerActions: {fileID: 801335481}
+  isObjectOpened: 1
 --- !u!65 &956219134
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -15602,6 +15604,7 @@ MonoBehaviour:
   - {fileID: 1243771707}
   impulse: 50
   playerActions: {fileID: 801335481}
+  isObjectOpened: 0
 --- !u!54 &1243771710
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -16223,7 +16226,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -20.003
+      value: -20.22
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalPosition.y
@@ -16231,11 +16234,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 19.878
+      value: 14.77
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.7786234
+      value: -0.4924172
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalRotation.x
@@ -16243,7 +16246,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.6274915
+      value: 0.8703593
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalRotation.z
@@ -16255,7 +16258,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 797.731
+      value: 958.999
       objectReference: {fileID: 0}
     - target: {fileID: 7772768238075887483, guid: f71dc31527c43354488105db9e5619d4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -19285,6 +19288,7 @@ MonoBehaviour:
   - {fileID: 1798522255}
   impulse: 0
   playerActions: {fileID: 801335481}
+  isObjectOpened: 1
 --- !u!82 &1598545999
 AudioSource:
   m_ObjectHideFlags: 0
