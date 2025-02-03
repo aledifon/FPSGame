@@ -6,11 +6,36 @@ using DG.Tweening;
 public class GameManager : MonoBehaviour
 {
     // Static var which contains the single instance of the Singleton
-    public static GameManager gm;
+    private static GameManager gm;
+    public static GameManager Gm 
+    { 
+        get 
+        { 
+            if (gm == null)
+            {
+                gm = FindAnyObjectByType<GameManager>();
+
+                if (gm == null)
+                {
+                    GameObject go = new GameObject("GameManager");
+                    gm = go.AddComponent<GameManager>();
+                }
+            }
+            return gm; 
+        } 
+    }
+
+    [SerializeField] private InteractuableObject lastDocumentObject; // Ref. to the Paper2 object
+
+    [SerializeField] private AudioSource clockAudioSource;
+    [SerializeField] private AudioSource womanSongAudioSource;    
+
+    private FadeManager fadeManager;
 
     // Audio components
     AudioSource audioSource;
     [SerializeField] AudioClip womanHandsclip;
+    [SerializeField] AudioClip finalHandsclip;
 
     Transform playerTransform;
 
@@ -24,8 +49,8 @@ public class GameManager : MonoBehaviour
     [SerializeField] private PathType pathType;
 
     // Woman Arms Duration
-    [SerializeField] float loweringArmsDuration = 2f;
-    [SerializeField] float aproachingArmsDuration = 2f;
+    [SerializeField] float loweringArmsDuration;
+    [SerializeField] float aproachingArmsDuration;
 
     bool isCoroutineRunning;
 
@@ -44,9 +69,7 @@ public class GameManager : MonoBehaviour
         // this GO
         else
             Destroy(gameObject);
-    }
-    // Private constructor in order to avoid create new instances through 'new'
-    private GameManager() { }
+    }    
 
     private void Start()
     {
@@ -65,19 +88,27 @@ public class GameManager : MonoBehaviour
         };
 
         audioSource = GetComponent<AudioSource>();
+        fadeManager = GetComponent<FadeManager>();          
+                    
+        //PlayArmsAnimation();
 
-        PlayArmsAnimation();
+        // Subscription to the Start & Stop reading events from InteractuableObject
+        InteractuableObject.OnReadingFinished += PlayArmsAnimationHandler;
+        InteractuableObject.OnReadingStarted += StopGeneralAudio;
     }
 
     #region Tweens Animations
-    public void PlayArmsAnimation()
+
+    void PlayArmsAnimationHandler(InteractuableObject sender)
     {
-        // Stop the general music background
-        audioSource.Stop();
-        // Enable the Woman's Hands GO
-        womanArms.gameObject.SetActive(true);
-        // Set the new audio clip & start playing it
-        audioSource.clip = womanHandsclip;
+        // Check if the Object which triggered the event was Paper2
+        if (sender == lastDocumentObject) 
+            StartCoroutine(nameof(PlayArmsAnimation));
+    }
+    IEnumerator PlayArmsAnimation()
+    {        
+        yield return new WaitForSeconds(3);
+
         audioSource.Play();
         // Finally start the Woman's Hands animation
         ArmsLoweringAnimation();
@@ -85,7 +116,7 @@ public class GameManager : MonoBehaviour
     void ArmsFullAnimation()
     {
         // Crear la secuencia
-        Sequence sequence = DOTween.Sequence();
+        Sequence sequence = DOTween.Sequence();        
 
         // Primer tween (bajar brazos)
         sequence.Append(womanArms.DOLocalPath(armsLoweringPath, loweringArmsDuration, pathType));
@@ -105,15 +136,15 @@ public class GameManager : MonoBehaviour
         Sequence sequence = DOTween.Sequence();
 
         // Primer tween (bajar brazos)
-        sequence.Append(womanArms.DOLocalPath(armsLoweringPath, loweringArmsDuration, pathType));
+        sequence.Append(womanArms.DOLocalPath(armsLoweringPath, loweringArmsDuration, pathType));        
 
         // Agregar intervalo (espera de 2 segundos)
-        sequence.AppendInterval(2f);
+        //sequence.AppendInterval(1f);
 
         sequence.OnComplete(() =>
         {
-            //StartCoroutine(nameof(ArmsAproachingAnimation));
-            ArmsAproachingAnimation();
+            //StartCoroutine(nameof(ArmsAproachingAnimation));            
+            StartCoroutine(nameof(PlayFinalAudioClip));           
         });
     }
     void ArmsAproachingAnimation()
@@ -125,12 +156,19 @@ public class GameManager : MonoBehaviour
         sequence.Append(womanArms.DOLocalPath(armsAproachingPath, aproachingArmsDuration, pathType));
 
         // Llamar a la acción después de que termine la secuencia
-        sequence.OnKill(() =>
+        sequence.OnComplete(() =>
         {
             Debug.Log("Animación 2 completada");
+            // Stop the final audio Clip
+            audioSource.Stop();
+            // Fade to Black
+            fadeManager.FadeToBlack();
         });
 
         //yield return null;
+
+        // Unscription from the event just after finish
+        InteractuableObject.OnReadingFinished -= PlayArmsAnimationHandler;
     }
     #endregion
 
@@ -152,24 +190,63 @@ public class GameManager : MonoBehaviour
 
     //    isCoroutineRunning = false;        
     //}
-    //IEnumerator AproachingArmsAnimation()
-    //{
-    //    isCoroutineRunning = true;
+    IEnumerator AproachingArmsAnimation()
+    {
+        isCoroutineRunning = true;
 
-    //    float elapsedTime = 0f;
+        float elapsedTime = 0f;
 
-    //    while (elapsedTime < loweringArmsDuration)
-    //    {
-    //        elapsedTime += Time.deltaTime;
-    //        womanArms.position = Vector3.Lerp(armsMiddlePos.position, armsEndPos.position, elapsedTime / aproachingArmsDuration);
-    //        yield return null;
-    //    }
-    //    // Assure all the doors finish on their right position        
-    //    womanArms.position = armsEndPos.position;
+        while (elapsedTime < aproachingArmsDuration)
+        {
+            elapsedTime += Time.deltaTime;
+            womanArms.position = Vector3.Lerp(armsMiddlePos.position, armsEndPos.position, elapsedTime / aproachingArmsDuration);
+            yield return null;
+        }
+        // Assure all the doors finish on their right position        
+        womanArms.position = armsEndPos.position;
 
-    //    isCoroutineRunning = false;
-    //}
+        // Stop the final audio Clip
+        audioSource.Stop();
+        // Fade to Black
+        fadeManager.FadeToBlack();
+
+        isCoroutineRunning = false;
+    }
     #endregion
+
+    IEnumerator PlayFinalAudioClip()
+    {
+        //audioSource.Stop();
+        // Set the new audio clip & start playing it        
+        audioSource.clip = finalHandsclip;
+        audioSource.time = 1f;
+        audioSource.Play();
+        yield return new WaitForSeconds(0.7f);
+        //ArmsAproachingAnimation();
+        StartCoroutine(nameof(AproachingArmsAnimation));
+
+    }
+    void StopGeneralAudio(InteractuableObject sender)
+    {
+        // Check if the Object which triggered the event was Paper2
+        if (sender == lastDocumentObject)
+        {
+            // Stop the Woman song audio
+            womanSongAudioSource.Stop();
+            // Stop the Alarm Clock audio
+            clockAudioSource.Stop();
+            // Stop the general music background
+            audioSource.Stop();
+            // Enable the Woman's Hands GO
+            womanArms.gameObject.SetActive(true);
+            // Set the new audio clip & start playing it
+            audioSource.clip = womanHandsclip;
+            // Set again the Volume to the maximum            
+            audioSource.volume = 1f;
+            // Unscription from the event just after finish
+            InteractuableObject.OnReadingStarted -= StopGeneralAudio;
+        }        
+    }
 
     void SetBlackScene()
     {

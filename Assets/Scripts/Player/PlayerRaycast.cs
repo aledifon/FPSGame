@@ -26,7 +26,7 @@ public class PlayerRaycast : MonoBehaviour
         ray.origin = myCamera.position;
         ray.direction = myCamera.forward;
 
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, objectLayer))     
+        if (Physics.Raycast(ray, out hit, 5f, objectLayer))     
         {
             Debug.Log("Detected object");
             interactuableObject = hit.collider.GetComponent<InteractuableObject>();

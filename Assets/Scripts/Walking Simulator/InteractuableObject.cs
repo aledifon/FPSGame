@@ -9,10 +9,14 @@ using DG.Tweening;
 
 public class InteractuableObject : Object
 {
+    #region TakeDrop_Vars
     [SerializeField] float impulse;
+    #endregion
 
-    // GO Components
+    #region Components
     [SerializeField] PlayerActions playerActions;
+    private AudioSource audioSource;
+    #endregion
 
     // Animate Type Objects vars.
     #region Animate_Drawer_Vars
@@ -42,8 +46,13 @@ public class InteractuableObject : Object
     public Boolean IsReading { get { return isReading; } }
     #endregion
 
+    #region Flags
     private bool isCoroutineRunning;
-    private AudioSource audioSource;
+    #endregion
+
+    // Events definition  
+    public static event Action<InteractuableObject> OnReadingStarted;
+    public static event Action<InteractuableObject> OnReadingFinished;
 
     private void Start()
     {
@@ -313,6 +322,9 @@ public class InteractuableObject : Object
     {
         // Oscurecer pantalla y sacar cuadro texto        
 
+        // Invoke to possible Event Listeners which are suscribed
+        OnReadingStarted?.Invoke(this);
+
         // Set the current object as unselected
         IsObjectSelected(false);
 
@@ -342,6 +354,11 @@ public class InteractuableObject : Object
         transform.rotation = paperTableRot;
 
         isReading = false;
+
+        Debug.Log("Finished reading");
+
+        // Invoke to possible Event Listeners which are suscribed
+        OnReadingFinished?.Invoke(this);
     }
     #endregion
 }
